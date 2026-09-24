@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { CommentCount, StatusChip } from '@/components/grades/status'
+import { CountUp } from '@/components/home/count-up'
 import {
   byDateDesc,
   categoryOf,
@@ -35,12 +36,12 @@ export function StatTiles() {
     <section className="stat-grid" aria-label="Statistiques">
       <Stat
         label="Note finale CFC"
-        value={<>{fmt(final)} <small>/ 6</small></>}
+        value={<><CountUp value={final} format={fmt} /> <small>/ 6</small></>}
         foot={<><StatusChip value={final} />provisoire, sans TPI</>}
       />
       <Stat
         label={`Moyenne du semestre ${CURRENT_SEMESTER}`}
-        value={fmt(cur)}
+        value={<CountUp value={cur} format={fmt} delay={60} />}
         foot={
           Math.abs(delta) < 0.05 ? (
             `stable par rapport au semestre ${CURRENT_SEMESTER - 1}`
@@ -52,8 +53,8 @@ export function StatTiles() {
           )
         }
       />
-      <Stat label="Notes saisies" value={GRADES.length} foot={`${inSemester(CURRENT_SEMESTER).length} ce semestre`} />
-      <Stat label="Notes insuffisantes" value={failed} foot={`sur ${GRADES.length} notes, seuil 4.0`} />
+      <Stat label="Notes saisies" value={<CountUp value={GRADES.length} delay={120} />} foot={`${inSemester(CURRENT_SEMESTER).length} ce semestre`} />
+      <Stat label="Notes insuffisantes" value={<CountUp value={failed} delay={180} />} foot={`sur ${GRADES.length} notes, seuil 4.0`} />
     </section>
   )
 }

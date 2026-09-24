@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react'
+import { useState, type CSSProperties, type ReactNode } from 'react'
 import { barPath, ChartBody, ChartCard, Segmented, type Tip } from '@/components/home/chart-parts'
 import {
   CURRENT_SEMESTER,
@@ -57,12 +57,14 @@ function SemesterBars({ width: W, filter, setTip }: { width: number; filter: num
               <text x={cx} y={y(0) - 8} className="c-sub" textAnchor="middle">—</text>
             ) : (
               <>
+                {/* keyed by filter so the bars grow again when the domain changes */}
                 <path
+                  key={`bar-${filter}`}
                   d={barPath(cx - bw / 2, cx + bw / 2, y(val), y(0))}
-                  className={val < PASS ? 'c-bar c-bar--fail' : 'c-bar'}
-                  style={hover === s ? { opacity: 0.8 } : undefined}
+                  className={val < PASS ? 'c-bar c-bar--fail c-grow-y' : 'c-bar c-grow-y'}
+                  style={{ '--i': s - 1, opacity: hover === s ? 0.8 : undefined } as CSSProperties}
                 />
-                <text x={cx} y={y(val) - 6} className="c-value" textAnchor="middle">{fmt(val)}</text>
+                <text key={`val-${filter}`} x={cx} y={y(val) - 6} className="c-value c-fade" textAnchor="middle" style={{ '--i': s - 1 } as CSSProperties}>{fmt(val)}</text>
                 <rect
                   x={cx - slot / 2}
                   y={0}
@@ -142,8 +144,8 @@ function DomainBars({ width: W, setTip }: { width: number; setTip: SetTip }) {
                 width={x(val)}
                 height={10}
                 rx={4}
-                className={val < PASS ? 'c-bar c-bar--fail' : 'c-bar'}
-                style={hover === id ? { opacity: 0.8 } : undefined}
+                className={val < PASS ? 'c-bar c-bar--fail c-grow-x' : 'c-bar c-grow-x'}
+                style={{ '--i': i, opacity: hover === id ? 0.8 : undefined } as CSSProperties}
               />
             )}
             <text x={0} y={top + 48} className="c-sub">{`Pondération ${w} %${val === null ? ' · pas encore évalué' : ''}`}</text>
@@ -231,8 +233,8 @@ function DistributionBars({ width: W, setTip }: { width: number; setTip: SetTip 
           <g key={b.lo}>
             {b.n > 0 && (
               <>
-                <path d={barPath(x0, x1, top, base)} className={fail ? 'c-bar c-bar--fail' : 'c-bar'} />
-                <text x={cx} y={top - 6} className="c-value" textAnchor="middle">{b.n}</text>
+                <path d={barPath(x0, x1, top, base)} className={fail ? 'c-bar c-bar--fail c-grow-y' : 'c-bar c-grow-y'} style={{ '--i': i } as CSSProperties} />
+                <text x={cx} y={top - 6} className="c-value c-fade" textAnchor="middle" style={{ '--i': i } as CSSProperties}>{b.n}</text>
               </>
             )}
             <rect

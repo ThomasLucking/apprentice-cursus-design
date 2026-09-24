@@ -1,6 +1,7 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useState, type CSSProperties } from 'react'
 import { useNavigate } from 'react-router'
 import { Segmented } from '@/components/home/chart-parts'
+import { CountUp } from '@/components/home/count-up'
 import { CommentCount, StatusChip } from '@/components/grades/status'
 import { GlyphChevronDown, GlyphChevronRight, GlyphSearch } from '@/components/icons'
 import {
@@ -52,14 +53,14 @@ export function GradebookSummary() {
         <div className="gb-final__gauge">
           <FinalGauge value={final} />
           <div className="gb-final__value">
-            <span>{fmt(final)}</span>
+            <span><CountUp value={final} format={fmt} /></span>
             <small>sur 6</small>
           </div>
         </div>
         <p className="gb-final__note">Provisoire : moyenne pondérée des domaines déjà notés. Le TPI compte pour 40 % une fois évalué.</p>
       </article>
       <div className="gb-domains">
-        {DOMAIN_IDS.map((id) => {
+        {DOMAIN_IDS.map((id, i) => {
           const v = nodeValue(id, GRADES, true)
           const n = gradesUnder(id).length
           return (
@@ -78,9 +79,9 @@ export function GradebookSummary() {
                 </>
               ) : (
                 <>
-                  <p className="gb-domain__value">{fmt(v)}</p>
+                  <p className="gb-domain__value"><CountUp value={v} format={fmt} /></p>
                   <div className="gb-meter" role="img" aria-label={`${fmt(v)} sur 6`}>
-                    <span className={v < PASS ? 'gb-meter__bar is-fail' : 'gb-meter__bar'} style={{ width: `${(v / 6) * 100}%` }} />
+                    <span className={v < PASS ? 'gb-meter__bar is-fail' : 'gb-meter__bar'} style={{ width: `${(v / 6) * 100}%`, '--i': i } as CSSProperties} />
                     <span className="gb-meter__tick" />
                   </div>
                   <p className="gb-domain__foot">
